@@ -76,10 +76,12 @@ class COCOVisualizer():
             plt.show()
 
         if savedir is not None:
-            if caption is None:
-                savename = '{}/{}-{}.png'.format(savedir, int(tgt['image_id']), str(datetime.datetime.now()).replace(' ', '-'))
-            else:
-                savename = '{}/{}-{}-{}.png'.format(savedir, caption, int(tgt['image_id']), str(datetime.datetime.now()).replace(' ', '-'))
+            # if caption is None:
+            #     savename = '{}/{}-{}.png'.format(savedir, int(tgt['image_id']), str(datetime.datetime.now()).replace(' ', '-'))
+            # else:
+            #     savename = '{}/{}-{}-{}.png'.format(savedir, caption, int(tgt['image_id']), str(datetime.datetime.now()).replace(' ', '-'))
+            savename = '{}'.format(savedir)
+
             print("savename: {}".format(savename))
             os.makedirs(os.path.dirname(savename), exist_ok=True)
             plt.savefig(savename)

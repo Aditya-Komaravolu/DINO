@@ -58,9 +58,11 @@ def get_args_parser():
     parser.add_argument('--test', action='store_true')
     parser.add_argument('--debug', action='store_true')
     parser.add_argument('--find_unused_params', action='store_true')
+    parser.add_argument('--distributed',default=True)
 
     parser.add_argument('--save_results', action='store_true')
     parser.add_argument('--save_log', action='store_true')
+    # parser.add_argument('--gpu', default=[0,1] , type=int)
 
     # distributed training parameters
     parser.add_argument('--world_size', default=1, type=int,
@@ -84,6 +86,9 @@ def build_model_main(args):
     return model, criterion, postprocessors
 
 def main(args):
+    # torch.cuda.set_device(0)
+    # torch.cuda.set_device(2)
+    device = torch.device('cuda')
     utils.init_distributed_mode(args)
     # load cfg file and update the args
     print("Loading config file from {}".format(args.config_file))
@@ -152,7 +157,9 @@ def main(args):
 
     model_without_ddp = model
     if args.distributed:
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=args.find_unused_params)
+        # model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=args.find_unused_params)
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank], find_unused_parameters=args.find_unused_params)
+        # model.to_device(device)
         model_without_ddp = model.module
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
     logger.info('number of params:'+str(n_parameters))

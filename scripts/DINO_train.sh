@@ -1,5 +1,6 @@
-coco_path=$1
-python main.py \
+coco_path=/home/aditya/snaglist_coco-combined
+CUDA_VISIBLE_DEVICES=0,1 torchrun --nproc_per_node=2  main.py \
+	--local_rank 2 \
 	--output_dir logs/DINO/R50-MS4 -c config/DINO/DINO_4scale.py --coco_path $coco_path \
 	--options dn_scalar=100 embed_init_tgt=TRUE \
 	dn_label_coef=1.0 dn_bbox_coef=1.0 use_ema=False \
